@@ -74,28 +74,48 @@
     <div class="msg" id="msg"></div>
   </div>
 
-  <script>
-    function registrar() {
-      const user = document.getElementById('username').value;
-      const pass = document.getElementById('password').value;
-      const confirm = document.getElementById('confirm').value;
-      const msg = document.getElementById('msg');
+<script>
+  async function registrar() {
+    const user = document.getElementById('username').value.trim();
+    const pass = document.getElementById('password').value.trim();
+    const confirm = document.getElementById('confirm').value.trim();
+    const msg = document.getElementById('msg');
 
-      if (!user || !pass || !confirm) {
-        msg.textContent = "Preencha todos os campos.";
-        return;
-      }
-
-      if (pass !== confirm) {
-        msg.textContent = "As senhas não coincidem.";
-        return;
-      }
-
-      // Aqui você enviaria para o servidor via fetch/ajax
-      msg.textContent = "Conta registrada com sucesso!";
-      msg.style.color = "lightgreen";
+    if (!user || !pass || !confirm) {
+      msg.textContent = "Preencha todos os campos.";
+      msg.style.color = "orange";
+      return;
     }
-  </script>
+
+    if (pass !== confirm) {
+      msg.textContent = "As senhas não coincidem.";
+      msg.style.color = "orange";
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: user, password: pass })
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        msg.textContent = data.message || "Conta registrada com sucesso!";
+        msg.style.color = "lightgreen";
+        setTimeout(() => window.location.href = "/login.html", 2000); // redirecionar se quiser
+      } else {
+        msg.textContent = data.error || "Erro no registro.";
+        msg.style.color = "red";
+      }
+    } catch (err) {
+      msg.textContent = "Erro ao conectar com o servidor.";
+      msg.style.color = "red";
+    }
+  }
+</script>
 
 </body>
 </html>

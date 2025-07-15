@@ -18,3 +18,10 @@ app.use(express.static('public'));
 app.listen(port, () => {
   console.log(`servidor rodando na porta ${port}`);
 });
+
+router.post('/register', async (req, res) => {
+  const { username, password } = req.body;
+  const hashed = await bcrypt.hash(password, 10);
+  await User.create({ username, passwordHash: hashed });
+  res.json({ message: 'Usuário criado com sucesso' });
+});
