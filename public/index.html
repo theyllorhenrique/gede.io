@@ -68,13 +68,12 @@
     }
 
     function register() {
-      alert("Abrir tela de cadastro");
-      // location.href = "/cadastro.html"
+    window.location.href = "user/register.html";
     }
 
     function exitGame() {
-      alert("Você saiu.");
-      // Pode usar window.close() em apps desktop, não funciona em navegadores
+    window.confirm("Você tem certeza que deseja sair?") &&
+    window.close();
     }
   </script>
 

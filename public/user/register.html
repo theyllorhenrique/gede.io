@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cadastro</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #1a1a1a;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .form-container {
+      background: #2c2c2c;
+      padding: 30px;
+      border-radius: 10px;
+      width: 300px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 5px;
+      background: #444;
+      color: white;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      background: #28a745;
+      color: white;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: #218838;
+    }
+
+    .msg {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 0.9em;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="form-container">
+    <h2>Registrar</h2>
+    <input type="text" id="username" placeholder="Usuário" required />
+    <input type="password" id="password" placeholder="Senha" required />
+    <input type="password" id="confirm" placeholder="Confirmar senha" required />
+    <button onclick="registrar()">Registrar</button>
+    <div class="msg" id="msg"></div>
+  </div>
+
+  <script>
+    function registrar() {
+      const user = document.getElementById('username').value;
+      const pass = document.getElementById('password').value;
+      const confirm = document.getElementById('confirm').value;
+      const msg = document.getElementById('msg');
+
+      if (!user || !pass || !confirm) {
+        msg.textContent = "Preencha todos os campos.";
+        return;
+      }
+
+      if (pass !== confirm) {
+        msg.textContent = "As senhas não coincidem.";
+        return;
+      }
+
+      // Aqui você enviaria para o servidor via fetch/ajax
+      msg.textContent = "Conta registrada com sucesso!";
+      msg.style.color = "lightgreen";
+    }
+  </script>
+
+</body>
+</html>
