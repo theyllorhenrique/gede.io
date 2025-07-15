@@ -3,10 +3,10 @@ const app = express();
 const port = process.env.PORT || 3000;
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const User = require('./models/User'); // Certifique-se de que o caminho está correto
+const User = require('./modules/User'); // Certifique-se de que o caminho está correto
 require('dotenv').config();
 
-app.use(express.static('public/jogo/user'));
+app.use(express.static('public')); // Servir arquivos estáticos
 app.use(express.json());
 
 // Conectar ao MongoDB
