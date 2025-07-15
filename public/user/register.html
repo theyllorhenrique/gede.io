@@ -2,120 +2,71 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Cadastro</title>
+  <title>Cadastro de Usuário</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #1a1a1a;
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-
-    .form-container {
-      background: #2c2c2c;
-      padding: 30px;
-      border-radius: 10px;
-      width: 300px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
-    }
-
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    input {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 5px;
-      background: #444;
-      color: white;
-    }
-
-    button {
-      width: 100%;
-      padding: 10px;
-      border: none;
-      background: #28a745;
-      color: white;
-      font-weight: bold;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-
-    button:hover {
-      background: #218838;
-    }
-
-    .msg {
-      text-align: center;
-      margin-top: 10px;
-      font-size: 0.9em;
-      color: #ccc;
-    }
+    body { font-family: Arial, sans-serif; background: #222; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+    .container { background: #333; padding: 20px; border-radius: 8px; width: 300px; }
+    input, button { width: 100%; padding: 10px; margin: 8px 0; border-radius: 4px; border: none; }
+    input { background: #444; color: white; }
+    button { background: #28a745; color: white; font-weight: bold; cursor: pointer; }
+    button:hover { background: #218838; }
+    #msg { margin-top: 10px; text-align: center; }
   </style>
 </head>
 <body>
 
-  <div class="form-container">
-    <h2>Registrar</h2>
+  <div class="container">
+    <h2>Cadastro</h2>
     <input type="text" id="username" placeholder="Usuário" required />
     <input type="password" id="password" placeholder="Senha" required />
     <input type="password" id="confirm" placeholder="Confirmar senha" required />
     <button onclick="registrar()">Registrar</button>
-    <div class="msg" id="msg"></div>
+    <div id="msg"></div>
   </div>
 
-<script>
-  async function registrar() {
-    const user = document.getElementById('username').value.trim();
-    const pass = document.getElementById('password').value.trim();
-    const confirm = document.getElementById('confirm').value.trim();
-    const msg = document.getElementById('msg');
+  <script>
+    async function registrar() {
+      const user = document.getElementById('username').value.trim();
+      const pass = document.getElementById('password').value.trim();
+      const confirm = document.getElementById('confirm').value.trim();
+      const msg = document.getElementById('msg');
 
-    if (!user || !pass || !confirm) {
-      msg.textContent = "Preencha todos os campos.";
-      msg.style.color = "orange";
-      return;
-    }
+      if (!user || !pass || !confirm) {
+        msg.textContent = "Preencha todos os campos.";
+        msg.style.color = "orange";
+        return;
+      }
 
-    if (pass !== confirm) {
-      msg.textContent = "As senhas não coincidem.";
-      msg.style.color = "orange";
-      return;
-    }
+      if (pass !== confirm) {
+        msg.textContent = "As senhas não coincidem.";
+        msg.style.color = "orange";
+        return;
+      }
 
-    try {
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: user, password: pass })
-      });
+      try {
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: user, password: pass })
+        });
 
-      const data = await res.json();
+        const data = await res.json();
 
-      if (res.ok) {
-        msg.textContent = data.message || "Conta registrada com sucesso!";
-        msg.style.color = "lightgreen";
-        setTimeout(() => window.location.href = "/login.html", 2000); // redirecionar se quiser
-      } else {
-        msg.textContent = data.error || "Erro no registro.";
+        if (res.ok) {
+          msg.textContent = data.message || "Conta registrada com sucesso!";
+          msg.style.color = "lightgreen";
+          // Se quiser redirecionar após cadastro, descomente abaixo
+          // setTimeout(() => window.location.href = "/login.html", 2000);
+        } else {
+          msg.textContent = data.error || "Erro no registro.";
+          msg.style.color = "red";
+        }
+      } catch (err) {
+        msg.textContent = "Erro ao conectar com o servidor.";
         msg.style.color = "red";
       }
-    } catch (err) {
-      msg.textContent = "Erro ao conectar com o servidor.";
-      msg.style.color = "red";
     }
-  }
-</script>
+  </script>
 
 </body>
 </html>
