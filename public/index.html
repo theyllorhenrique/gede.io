@@ -1,11 +1,82 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Menu do Jogo</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #1a1a1a;
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .menu {
+      text-align: center;
+    }
+
+    .menu h1 {
+      font-size: 2.5em;
+      margin-bottom: 30px;
+    }
+
+    .menu button {
+      display: block;
+      width: 200px;
+      padding: 15px;
+      margin: 10px auto;
+      font-size: 1em;
+      background: #333;
+      border: none;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .menu button:hover {
+      background: #555;
+    }
+  </style>
 </head>
 <body>
-    <h1>ola meu mundo</h1>
+
+  <div class="menu">
+    <h1>Meu Jogo</h1>
+    <button onclick="startGame()">Iniciar Jogo</button>
+    <button onclick="login()">Login</button>
+    <button onclick="register()">Cadastro</button>
+    <button onclick="exitGame()">Sair</button>
+  </div>
+
+  <script>
+    function startGame() {
+      alert("Jogo iniciado!");
+      // Redirecionar ou iniciar lógica do jogo
+      // location.href = "/jogo.html"
+    }
+
+    function login() {
+      alert("Abrir tela de login");
+      // location.href = "/login.html"
+    }
+
+    function register() {
+      alert("Abrir tela de cadastro");
+      // location.href = "/cadastro.html"
+    }
+
+    function exitGame() {
+      alert("Você saiu.");
+      // Pode usar window.close() em apps desktop, não funciona em navegadores
+    }
+  </script>
+
 </body>
 </html>
