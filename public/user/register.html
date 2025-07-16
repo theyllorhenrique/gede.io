@@ -88,8 +88,6 @@
       if (res.ok) {
         msg.textContent = data.message || "Conta registrada com sucesso!";
         msg.style.color = "lightgreen";
-        // Se quiser redirecionar após o cadastro:
-        // setTimeout(() => window.location.href = "/login.html", 2000);
       } else {
         msg.textContent = data.error || "Erro no registro.";
         msg.style.color = "red";
