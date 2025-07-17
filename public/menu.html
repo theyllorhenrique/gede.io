@@ -45,12 +45,16 @@
     <h1>Menu do Jogo</h1>
     <button onclick="iniciarjogo()">Iniciar Jogo</button>
     <button onclick="alert('Sair')">Sair</button>
-     
-    <script>
-    function iniciarjogo() {
-      window.location.href = "/public/jogo/jogo.html";
-    }
-    </script>
   </div>
+
+  <script>
+    function iniciarjogo() {
+      // Caminho correto baseado no Express.static
+      window.location.href = "/jogo/jogo.html";
+    }
+  </script>
 </body>
 </html>
+git add .
+git commit -m "Atualizar menu do jogo para redirecionar corretamente"
+git push 
