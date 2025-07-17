@@ -1,11 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=h, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <title>Menu do Jogo</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #1a1a1a;
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .menu {
+      text-align: center;
+    }
+    .menu h1 {
+      font-size: 2.5em;
+      margin-bottom: 30px;
+    }
+    .menu button {
+      display: block;
+      width: 200px;
+      padding: 15px;
+      margin: 10px auto;
+      font-size: 1em;
+      background: #333;
+      border: none;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .menu button:hover {
+      background: #555;
+    }
+  </style>
 </head>
 <body>
-    <h1>voce entrou</h1>
+  <div class="menu">
+    <h1>Menu do Jogo</h1>
+    <button onclick="alert('Iniciar Jogo')">Iniciar Jogo</button>
+    <button onclick="alert('Sair')">Sair</button>
+  </div>
 </body>
 </html>

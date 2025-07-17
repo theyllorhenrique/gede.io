@@ -7,7 +7,7 @@ const path = require('path');
 const app = express();
 const PORT = 3000;
 
-// Garante que o arquivo users.json exista
+// Cria users.json se não existir
 if (!fs.existsSync('users.json')) {
   fs.writeFileSync('users.json', '[]');
 }
@@ -47,7 +47,7 @@ app.post('/api/auth/register', async (req, res) => {
   users.push({ username, password: hashed });
   saveUsers(users);
 
-  res.status(201).json({ message: 'Conta registrada com sucesso!' });
+  res.status(201).json({ message: 'Conta registrada com sucesso!', redirect: '/menu.html' });
 });
 
 // Rota de login
@@ -67,10 +67,10 @@ app.post('/api/auth/login', async (req, res) => {
   if (!match)
     return res.status(401).json({ error: 'Senha incorreta.' });
 
-  res.json({ message: 'Login bem-sucedido!',redirect:'/public/menu.html'});
+  res.json({ message: 'Login bem-sucedido!', redirect: '/menu.html' });
 });
 
 // Inicia servidor
 app.listen(PORT, () => {
-  console.log(`✅ Servidor rodando em http://localhost:${PORT}`);
+  console.log(`✅ Servidor rodando: http://localhost:${PORT}`);
 });
