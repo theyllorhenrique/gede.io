@@ -47,11 +47,10 @@
   </style>
 </head>
 <body>
-
 <div class="container">
   <h2>Login</h2>
-  <input type="text" id="username" placeholder="Usuário" required />
-  <input type="password" id="password" placeholder="Senha" required />
+  <input type="text" id="username" placeholder="Usuário" />
+  <input type="password" id="password" placeholder="Senha" />
   <button onclick="login()">Entrar</button>
   <div id="msg"></div>
 </div>
@@ -78,18 +77,17 @@
       const data = await res.json();
 
       if (res.ok) {
-        msg.textContent = data.message || "Login bem-sucedido!";
+        msg.textContent = data.message;
         msg.style.color = "lightgreen";
       } else {
-        msg.textContent = data.error || "Erro no login.";
+        msg.textContent = data.error;
         msg.style.color = "red";
       }
-    } catch (err) {
+    } catch {
       msg.textContent = "Erro ao conectar com o servidor.";
       msg.style.color = "red";
     }
   }
 </script>
-
 </body>
 </html>

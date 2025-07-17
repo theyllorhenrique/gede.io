@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Cadastro de Usuário</title>
+  <title>Cadastro</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -47,12 +47,11 @@
   </style>
 </head>
 <body>
-
 <div class="container">
   <h2>Cadastro</h2>
-  <input type="text" id="username" placeholder="Usuário" required />
-  <input type="password" id="password" placeholder="Senha" required />
-  <input type="password" id="confirm" placeholder="Confirmar senha" required />
+  <input type="text" id="username" placeholder="Usuário" />
+  <input type="password" id="password" placeholder="Senha" />
+  <input type="password" id="confirm" placeholder="Confirmar senha" />
   <button onclick="registrar()">Registrar</button>
   <div id="msg"></div>
 </div>
@@ -86,19 +85,17 @@
       const data = await res.json();
 
       if (res.ok) {
-        msg.textContent = data.message || "Conta registrada com sucesso!";
+        msg.textContent = data.message;
         msg.style.color = "lightgreen";
-        window.location.href = "/public/index.html"; 
       } else {
-        msg.textContent = data.error || "Erro no registro.";
+        msg.textContent = data.error;
         msg.style.color = "red";
       }
-    } catch (err) {
+    } catch {
       msg.textContent = "Erro ao conectar com o servidor.";
       msg.style.color = "red";
     }
   }
 </script>
-
 </body>
 </html>

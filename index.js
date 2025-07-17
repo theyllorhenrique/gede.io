@@ -7,11 +7,16 @@ const path = require('path');
 const app = express();
 const PORT = 3000;
 
-// Middleware para ler JSON do body e servir arquivos públicos
+// Garante que o arquivo users.json exista
+if (!fs.existsSync('users.json')) {
+  fs.writeFileSync('users.json', '[]');
+}
+
+// Middlewares
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Carrega usuários do JSON
+// Funções auxiliares
 function loadUsers() {
   try {
     const data = fs.readFileSync('users.json', 'utf-8');
@@ -21,12 +26,11 @@ function loadUsers() {
   }
 }
 
-// Salva usuários no JSON
 function saveUsers(users) {
   fs.writeFileSync('users.json', JSON.stringify(users, null, 2));
 }
 
-// Rota de cadastro
+// Rota de registro
 app.post('/api/auth/register', async (req, res) => {
   const { username, password } = req.body;
 
@@ -34,13 +38,13 @@ app.post('/api/auth/register', async (req, res) => {
     return res.status(400).json({ error: 'Preencha todos os campos.' });
 
   const users = loadUsers();
-  const userExists = users.find(u => u.username === username);
+  const exists = users.find(u => u.username === username);
 
-  if (userExists)
+  if (exists)
     return res.status(409).json({ error: 'Usuário já existe.' });
 
-  const hashedPassword = await bcrypt.hash(password, 10);
-  users.push({ username, password: hashedPassword });
+  const hashed = await bcrypt.hash(password, 10);
+  users.push({ username, password: hashed });
   saveUsers(users);
 
   res.status(201).json({ message: 'Conta registrada com sucesso!' });
@@ -59,14 +63,14 @@ app.post('/api/auth/login', async (req, res) => {
   if (!user)
     return res.status(404).json({ error: 'Usuário não encontrado.' });
 
-  const senhaCorreta = await bcrypt.compare(password, user.password);
-  if (!senhaCorreta)
+  const match = await bcrypt.compare(password, user.password);
+  if (!match)
     return res.status(401).json({ error: 'Senha incorreta.' });
 
   res.json({ message: 'Login bem-sucedido!' });
 });
 
-// Inicia o servidor
+// Inicia servidor
 app.listen(PORT, () => {
   console.log(`✅ Servidor rodando em http://localhost:${PORT}`);
 });
