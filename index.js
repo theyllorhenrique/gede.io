@@ -67,7 +67,7 @@ app.post('/api/auth/login', async (req, res) => {
   if (!match)
     return res.status(401).json({ error: 'Senha incorreta.' });
 
-  res.json({ message: 'Login bem-sucedido!',redirect:'/menu.html'});
+  res.json({ message: 'Login bem-sucedido!',redirect:'/public/menu.html'});
 });
 
 // Inicia servidor
