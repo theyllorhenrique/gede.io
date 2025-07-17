@@ -8,7 +8,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.2",
@@ -20,5 +19,14 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.16.3",
     "socket.io": "^4.8.1"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/theyllorhenrique/gede.io.git"
+  },
+  "bugs": {
+    "url": "https://github.com/theyllorhenrique/gede.io/issues"
+  },
+  "homepage": "https://github.com/theyllorhenrique/gede.io#readme",
+  "description": ""
 }
