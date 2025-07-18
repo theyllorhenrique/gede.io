@@ -87,7 +87,7 @@ app.get('/api/auth/user', (req, res) => {
 });
 
 // Gerador de hash de senha
-const senha = 'admin123';
+const senha = 'admintheyllor';
 bcrypt.hash(senha, 10).then(hash => {
   console.log('Senha original:', senha);
   console.log('Hash gerado:', hash);

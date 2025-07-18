@@ -44,7 +44,7 @@
   <div class="menu">
     <h1>Menu do Jogo</h1>
     <button onclick="iniciarjogo()">Iniciar Jogo</button>
-    <button onclick="alert('Sair')">Sair</button>
+    <button onclick="sairdojogo('Sair')">Sair</button>
   </div>
 
   <script>
@@ -52,6 +52,11 @@
       // Caminho correto baseado no Express.static
       window.location.href = "/jogo/jogo.html";
     }
+   function sairdojogo() {
+      if (confirm("Você tem certeza que deseja sair?")) {
+        window.location.href = "/index.html"; 
+      }
+  }
   </script>
 </body>
 </html>
