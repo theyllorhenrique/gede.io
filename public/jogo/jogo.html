@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Jogo</title>
+  <style>
+    body {
+      background: #121212;
+      color: white;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .topbar {
+      background: #1f1f1f;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .admin {
+      color: #00ff00;
+      font-weight: bold;
+    }
+
+    .content {
+      padding: 30px;
+      text-align: center;
+    }
+
+    .logout, .admin-button {
+      background: #444;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin: 10px;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+
+    .logout:hover, .admin-button:hover {
+      background: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div id="userStatus">Carregando...</div>
+    <button class="logout" onclick="logout()">Sair</button>
+  </div>
+
+  <div class="content">
+    <h1>Bem-vindo ao Jogo!</h1>
+    <p>Aqui começa sua aventura...</p>
+
+    <div id="adminPanel" style="margin-top: 30px;"></div>
+  </div>
+
+  <script>
+    async function checkSession() {
+      const res = await fetch("/api/auth/me");
+      const data = await res.json();
+
+      const userStatus = document.getElementById("userStatus");
+      const adminPanel = document.getElementById("adminPanel");
+
+      if (res.ok && data.username) {
+        userStatus.innerHTML = `Usuário: <strong>${data.username}</strong>` +
+          (data.role === 'admin' ? ' <span class="admin">(ADM)</span>' : '');
+
+        if (data.role === 'admin') {
+          adminPanel.innerHTML = `
+            <h3>Menu Administrativo</h3>
+            <button class="admin-button" onclick="alert('Painel de Controle')">Painel de Controle</button>
+            <button class="admin-button" onclick="alert('Ver logs')">Ver Logs</button>
+            <button class="admin-button" onclick="alert('Gerenciar jogadores')">Gerenciar Jogadores</button>
+          `;
+        }
+      } else {
+        alert("Sessão expirada. Faça login novamente.");
+        window.location.href = "/login.html";
+      }
+    }
+
+    function logout() {
+      fetch("/api/auth/logout").then(() => {
+        window.location.href = "/login.html";
+      });
+    }
+
+    checkSession();
+  </script>
+</body>
+</html>
