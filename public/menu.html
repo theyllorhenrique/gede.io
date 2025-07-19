@@ -1,72 +1,34 @@
+<!-- public/menu.html -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Menu do Jogo</title>
-  <style>
-    body {
-      margin: 0; padding: 0;
-      background: #1a1a1a; color: white;
-      font-family: Arial, sans-serif;
-      display: flex; justify-content: center; align-items: center;
-      height: 100vh;
-    }
-    .menu {
-      text-align: center;
-    }
-    .menu h1 {
-      font-size: 2.5em;
-      margin-bottom: 30px;
-    }
-    .menu button {
-      display: block;
-      width: 200px;
-      padding: 15px;
-      margin: 10px auto;
-      font-size: 1em;
-      background: #333;
-      border: none;
-      color: white;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    .menu button:hover {
-      background: #555;
-    }
-  </style>
+  <title>Menu</title>
 </head>
 <body>
-  <div class="menu">
-    <h1>Menu do Jogo</h1>
-    <p id="welcome"></p>
-    <button onclick="iniciarJogo()">Iniciar Jogo</button>
-    <button onclick="sair()">Sair</button>
-    <div id="adminArea" style="margin-top: 20px;"></div>
+  <h1>Bem-vindo, <span id="user"></span></h1>
+  <button onclick="iniciar()">Iniciar Jogo</button>
+  <button onclick="sair()">Sair</button>
+  <div id="admin">
+    <button onclick="alert('Painel Admin')">Painel Admin</button>
+    <button onclick="alert('Gerenciar usuários')">Gerenciar Usuários</button>
   </div>
 
   <script>
-    const isAdmin = localStorage.getItem("isAdmin") === "true";
-    const username = localStorage.getItem("username");
-    document.getElementById('welcome').innerText = `Olá, ${username}!`;
+    const user = localStorage.getItem('username');
+    const isAdmin = localStorage.getItem('isAdmin') === "true";
+    document.getElementById('user').innerText = user;
+    if (!isAdmin) document.getElementById('admin').style.display = "none";
 
-    if (isAdmin) {
-      document.getElementById("adminArea").innerHTML = `
-        <button onclick="alert('Admin: Painel de controle')">Painel Admin</button>
-        <button onclick="alert('Admin: Gerenciar usuários')">Gerenciar Usuários</button>
-      `;
-    }
-
-    function iniciarJogo() {
-      alert("Iniciando jogo...");
-      // window.location.href = "jogo.html"
+    function iniciar() {
+      window.location.href = "/jogo/jogo.html";
     }
 
     function sair() {
-      if (confirm("Deseja sair?")) {
+      fetch('/logout').then(() => {
         localStorage.clear();
-        window.location.href = "login.html";
-      }
+        window.location.href = "/login.html";
+      });
     }
   </script>
 </body>

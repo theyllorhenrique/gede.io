@@ -1,97 +1,36 @@
+<!-- public/login.html -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>Login de Usuário</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #222;
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .container {
-      background: #333;
-      padding: 20px;
-      border-radius: 8px;
-      width: 300px;
-    }
-    input, button {
-      width: 100%;
-      padding: 10px;
-      margin: 8px 0;
-      border-radius: 4px;
-      border: none;
-    }
-    input {
-      background: #444;
-      color: white;
-    }
-    button {
-      background: #007bff;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #0056b3;
-    }
-    #msg {
-      margin-top: 10px;
-      text-align: center;
-    }
-  </style>
+  <meta charset="UTF-8">
+  <title>Login</title>
 </head>
 <body>
-
-<div class="container">
   <h2>Login</h2>
-  <input type="text" id="username" placeholder="Usuário" required />
-  <input type="password" id="password" placeholder="Senha" required />
-  <button onclick="login()">Entrar</button>
-  <div id="msg"></div>
-</div>
+  <input id="username" placeholder="Usuário">
+  <input id="password" placeholder="Senha" type="password">
+  <button onclick="logar()">Entrar</button>
+  <p id="msg"></p>
 
-<script>
-  async function login() {
-    const username = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value.trim();
-    const msg = document.getElementById('msg');
-
-    if (!username || !password) {
-      msg.textContent = "Preencha todos os campos.";
-      msg.style.color = "orange";
-      return;
-    }
-
-    try {
+  <script>
+    async function logar() {
+      const user = document.getElementById('username').value;
+      const pass = document.getElementById('password').value;
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ username: user, password: pass })
       });
 
       const data = await res.json();
-
       if (res.ok) {
-        localStorage.setItem('username', data.username);
+        localStorage.setItem('username', user);
         localStorage.setItem('isAdmin', data.isAdmin);
-        window.location.href = '/menu.html';
+        window.location.href = "/menu.html";
       } else {
-        msg.textContent = data.error || "Erro no login.";
-        msg.style.color = "red";
+        document.getElementById('msg').innerText = data.error;
       }
-    } catch (err) {
-      msg.textContent = "Erro ao conectar com o servidor.";
-      msg.style.color = "red";
     }
-  }
-</script>
-
+  </script>
 </body>
 </html>
-

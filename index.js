@@ -1,100 +1,76 @@
 const express = require('express');
-const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const fs = require('fs');
-const path = require('path');
 const session = require('express-session');
+const MongoStore = require('connect-mongo');
+const path = require('path');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
-// Garante que o arquivo users.json exista
-if (!fs.existsSync('users.json')) {
-  fs.writeFileSync('users.json', '[]');
-}
+// 🔌 Conexão com MongoDB
+const mongoUrl = 'mongodb+srv://shettvyb:<db_password>@cluster0.evu5vho.mongodb.net/usuariosDB';
+mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log("✅ MongoDB conectado!"))
+  .catch(err => console.error("❌ Erro MongoDB:", err));
 
-// Middlewares
-app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(session({
-  secret: 'segredo-super-seguro',
-  resave: false,
-  saveUninitialized: false,
-  cookie: { maxAge: 1000 * 60 * 60 * 24 }
+// 🧩 Modelo do usuário
+const User = mongoose.model('User', new mongoose.Schema({
+  username: String,
+  password: String,
+  isAdmin: { type: Boolean, default: false }
 }));
 
-// Funções auxiliares
-function loadUsers() {
-  try {
-    const data = fs.readFileSync('users.json', 'utf-8');
-    return JSON.parse(data);
-  } catch (err) {
-    return [];
-  }
-}
+// 🔐 Sessão
+app.use(session({
+  secret: 'segredoSuperSecreto',
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({ mongoUrl })
+}));
 
-function saveUsers(users) {
-  fs.writeFileSync('users.json', JSON.stringify(users, null, 2));
-}
+// Middlewares
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
 
-// Rota de registro
+// 📦 Rotas
 app.post('/api/auth/register', async (req, res) => {
-  const { username, password, role } = req.body;
+  const { username, password } = req.body;
+  const exists = await User.findOne({ username });
+  if (exists) return res.status(409).json({ error: 'Usuário já existe.' });
 
-  if (!username || !password)
-    return res.status(400).json({ error: 'Preencha todos os campos.' });
-
-  const users = loadUsers();
-  const exists = users.find(u => u.username === username);
-
-  if (exists)
-    return res.status(409).json({ error: 'Usuário já existe.' });
-
-  const hashed = await bcrypt.hash(password, 10);
-  const userRole = role === 'admin' ? 'admin' : 'user';
-  users.push({ username, password: hashed, role: userRole });
-  saveUsers(users);
-
+  const hash = await bcrypt.hash(password, 10);
+  const isAdmin = username === 'admin';
+  const user = new User({ username, password: hash, isAdmin });
+  await user.save();
   res.status(201).json({ message: 'Conta registrada com sucesso!' });
 });
 
-// Rota de login
 app.post('/api/auth/login', async (req, res) => {
   const { username, password } = req.body;
-
-  if (!username || !password)
-    return res.status(400).json({ error: 'Usuário e senha obrigatórios.' });
-
-  const users = loadUsers();
-  const user = users.find(u => u.username === username);
-
-  if (!user)
-    return res.status(404).json({ error: 'Usuário não encontrado.' });
+  const user = await User.findOne({ username });
+  if (!user) return res.status(404).json({ error: 'Usuário não encontrado.' });
 
   const match = await bcrypt.compare(password, user.password);
-  if (!match)
-    return res.status(401).json({ error: 'Senha incorreta.' });
+  if (!match) return res.status(401).json({ error: 'Senha incorreta.' });
 
-  req.session.user = { username: user.username, role: user.role };
-  res.json({ message: 'Login bem-sucedido!' });
+  req.session.user = { username: user.username, isAdmin: user.isAdmin };
+  res.json({ message: 'Login bem-sucedido!', isAdmin: user.isAdmin });
 });
 
-// Rota para logout
-app.get('/api/auth/logout', (req, res) => {
-  req.session.destroy(() => {
-    res.redirect('/login.html');
-  });
-});
-
-// Rota para pegar dados da sessão
 app.get('/api/auth/me', (req, res) => {
-  if (!req.session.user) {
-    return res.status(401).json({ error: 'Não autenticado' });
+  if (req.session.user) {
+    res.json(req.session.user);
+  } else {
+    res.status(401).json({ error: 'Não autenticado' });
   }
-  res.json(req.session.user);
+});
+
+app.get('/logout', (req, res) => {
+  req.session.destroy();
+  res.redirect('/login.html');
 });
 
 // Inicia servidor
-app.listen(PORT, () => {
-  console.log(`✅ Servidor rodando em http://localhost:${PORT}`);
-});
+app.listen(PORT, () => console.log(`✅ Servidor rodando em http://localhost:${PORT}`));
