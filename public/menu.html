@@ -1,18 +1,14 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Menu do Jogo</title>
   <style>
     body {
-      margin: 0;
-      padding: 0;
-      background: #1a1a1a;
-      color: white;
+      margin: 0; padding: 0;
+      background: #1a1a1a; color: white;
       font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      display: flex; justify-content: center; align-items: center;
       height: 100vh;
     }
     .menu {
@@ -43,21 +39,35 @@
 <body>
   <div class="menu">
     <h1>Menu do Jogo</h1>
-    <button onclick="iniciarjogo()">Iniciar Jogo</button>
-    <button onclick="sairdojogo('Sair')">Sair</button>
+    <p id="welcome"></p>
+    <button onclick="iniciarJogo()">Iniciar Jogo</button>
+    <button onclick="sair()">Sair</button>
+    <div id="adminArea" style="margin-top: 20px;"></div>
   </div>
 
   <script>
-    function iniciarjogo() {
-      // Caminho correto baseado no Express.static
-      window.location.href = "/jogo/jogo.html";
+    const isAdmin = localStorage.getItem("isAdmin") === "true";
+    const username = localStorage.getItem("username");
+    document.getElementById('welcome').innerText = `Olá, ${username}!`;
+
+    if (isAdmin) {
+      document.getElementById("adminArea").innerHTML = `
+        <button onclick="alert('Admin: Painel de controle')">Painel Admin</button>
+        <button onclick="alert('Admin: Gerenciar usuários')">Gerenciar Usuários</button>
+      `;
     }
-   function sairdojogo() {
-      if (confirm("Você tem certeza que deseja sair?")) {
-        window.location.href = "/index.html"; 
+
+    function iniciarJogo() {
+      alert("Iniciando jogo...");
+      // window.location.href = "jogo.html"
+    }
+
+    function sair() {
+      if (confirm("Deseja sair?")) {
+        localStorage.clear();
+        window.location.href = "login.html";
       }
-  }
+    }
   </script>
 </body>
 </html>
-

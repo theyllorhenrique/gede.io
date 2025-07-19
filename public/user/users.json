@@ -1,7 +1,8 @@
 [
   {
-    "username": "theyllorAdmin",
-    "password": "$2b$10$3KNbFAu9GjtdhMQT5cL8Xe54oYb5/sVrj0pQUqmnQ5CyDk1PjNa9q",
-    "isAdmin": true
+    "username": "admin",
+    "password": "$2b$10$o9PUVXRp7iMr0vIpxBcpD.9c4jo4UD.OhxE6Z9dWdJ2.G/YCVBUMW",
+    "role": "admin"
   }
 ]
+
