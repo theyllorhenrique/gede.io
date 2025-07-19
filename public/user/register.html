@@ -1,15 +1,14 @@
-<!-- public/register.html -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Cadastro</title>
+  <title>Registrar</title>
 </head>
 <body>
-  <h2>Cadastro</h2>
+  <h2>Registro</h2>
   <input id="username" placeholder="Usuário">
-  <input id="password" placeholder="Senha" type="password">
-  <input id="confirm" placeholder="Confirmar Senha" type="password">
+  <input id="password" type="password" placeholder="Senha">
+  <input id="confirm" type="password" placeholder="Confirmar Senha">
   <button onclick="registrar()">Registrar</button>
   <p id="msg"></p>
 
@@ -18,9 +17,11 @@
       const user = document.getElementById('username').value;
       const pass = document.getElementById('password').value;
       const confirm = document.getElementById('confirm').value;
-      const msg = document.getElementById('msg');
 
-      if (pass !== confirm) return msg.innerText = "Senhas não coincidem.";
+      if (pass !== confirm) {
+        document.getElementById('msg').innerText = "Senhas diferentes.";
+        return;
+      }
 
       const res = await fetch('/api/auth/register', {
         method: 'POST',
@@ -30,9 +31,9 @@
 
       const data = await res.json();
       if (res.ok) {
-        msg.innerText = data.message;
+        document.getElementById('msg').innerText = "Conta criada com sucesso!";
       } else {
-        msg.innerText = data.error;
+        document.getElementById('msg').innerText = data.error;
       }
     }
   </script>
