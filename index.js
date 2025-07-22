@@ -1,77 +1,89 @@
+// index.js
 const express = require('express');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const path = require('path');
+const bodyParser = require('body-parser');
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const mongoUrl = 'mongodb+srv://shettvyb:<db_password>@cluster0.evu5vho.mongodb.net/usuariosDB';
-mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("✅ MongoDB conectado"))
-  .catch(err => console.error("❌ Erro ao conectar:", err));
+// Conectar ao MongoDB
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+}).then(() => console.log('✅ Conectado ao MongoDB'))
+  .catch(err => console.error('Erro ao conectar no MongoDB:', err));
 
-// Modelo de usuário
-const User = mongoose.model('User', new mongoose.Schema({
+// Schema de usuário
+const userSchema = new mongoose.Schema({
   username: String,
   password: String,
   isAdmin: { type: Boolean, default: false }
-}));
+});
+const User = mongoose.model('User', userSchema);
 
-// Sessão
+// Configurações
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use(session({
-  secret: 'superSegredo',
+  secret: 'segredo_super_secreto',
   resave: false,
   saveUninitialized: false,
-  store: MongoStore.create({ mongoUrl })
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGO_URI,
+    collectionName: 'sessions'
+  })
 }));
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Registro
+// Rotas
 app.post('/api/auth/register', async (req, res) => {
   const { username, password } = req.body;
-  const exists = await User.findOne({ username });
-  if (exists) return res.status(409).json({ error: 'Usuário já existe.' });
+
+  if (!username || !password) return res.status(400).json({ error: 'Campos obrigatórios' });
+
+  const userExist = await User.findOne({ username });
+  if (userExist) return res.status(409).json({ error: 'Usuário já existe' });
 
   const hash = await bcrypt.hash(password, 10);
-  const isAdmin = username === 'admin';
+  const isAdmin = username === 'admin'; // Regra: se nome for admin → admin verdadeiro
+
   const user = new User({ username, password: hash, isAdmin });
   await user.save();
 
-  res.status(201).json({ message: 'Registrado com sucesso!' });
+  res.json({ message: 'Conta criada com sucesso!' });
 });
 
-// Login
 app.post('/api/auth/login', async (req, res) => {
   const { username, password } = req.body;
+
   const user = await User.findOne({ username });
-  if (!user) return res.status(404).json({ error: 'Usuário não encontrado.' });
+  if (!user) return res.status(404).json({ error: 'Usuário não encontrado' });
 
   const match = await bcrypt.compare(password, user.password);
-  if (!match) return res.status(401).json({ error: 'Senha incorreta.' });
+  if (!match) return res.status(401).json({ error: 'Senha incorreta' });
 
-  req.session.user = { username: user.username, isAdmin: user.isAdmin };
-  res.json({ message: 'Login ok', isAdmin: user.isAdmin });
+  req.session.user = {
+    username: user.username,
+    isAdmin: user.isAdmin
+  };
+
+  res.json({ message: 'Login bem-sucedido', isAdmin: user.isAdmin });
 });
 
-// Verifica usuário logado
-app.get('/api/auth/me', (req, res) => {
-  if (req.session.user) {
-    res.json(req.session.user);
-  } else {
-    res.status(401).json({ error: 'Não autenticado' });
-  }
+app.get('/api/auth/logout', (req, res) => {
+  req.session.destroy(() => {
+    res.json({ message: 'Logout realizado' });
+  });
 });
 
-// Logout
-app.get('/logout', (req, res) => {
-  req.session.destroy();
-  res.redirect('/login.html');
+// Início
+app.listen(PORT, () => {
+  console.log(`🚀 Servidor rodando: http://localhost:${PORT}`);
 });
-
-app.listen(PORT, () => console.log(`✅ Servidor em http://localhost:${PORT}`));
