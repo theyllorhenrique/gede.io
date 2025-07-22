@@ -3,32 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <title>Login</title>
+  <style>
+    body { background: #111; color: white; font-family: Arial; text-align: center; padding-top: 100px; }
+    input, button { padding: 10px; margin: 10px; width: 200px; }
+    button { cursor: pointer; }
+  </style>
 </head>
 <body>
   <h2>Login</h2>
-  <input id="username" placeholder="Usuário">
-  <input id="password" type="password" placeholder="Senha">
-  <button onclick="logar()">Entrar</button>
-  <p id="msg"></p>
+  <input type="text" id="username" placeholder="Usuário"><br>
+  <input type="password" id="password" placeholder="Senha"><br>
+  <button onclick="login()">Entrar</button>
+  <div id="msg"></div>
 
   <script>
-    async function logar() {
-      const user = document.getElementById('username').value;
-      const pass = document.getElementById('password').value;
+    async function login() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const msg = document.getElementById('msg');
 
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: user, password: pass })
+        body: JSON.stringify({ username, password })
       });
 
       const data = await res.json();
+      msg.textContent = data.message || data.error;
+
       if (res.ok) {
-        localStorage.setItem('username', user);
-        localStorage.setItem('isAdmin', data.isAdmin);
-        window.location.href = "/menu.html";
-      } else {
-        document.getElementById('msg').innerText = data.error;
+        localStorage.setItem('isAdmin', data.isAdmin); // salva info local
+        setTimeout(() => location.href = 'menu.html', 1000);
       }
     }
   </script>

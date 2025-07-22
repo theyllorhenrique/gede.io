@@ -3,38 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <title>Registrar</title>
+  <style>
+    body { background: #111; color: white; font-family: Arial; text-align: center; padding-top: 100px; }
+    input, button { padding: 10px; margin: 10px; width: 200px; }
+    button { cursor: pointer; }
+  </style>
 </head>
 <body>
-  <h2>Registro</h2>
-  <input id="username" placeholder="Usuário">
-  <input id="password" type="password" placeholder="Senha">
-  <input id="confirm" type="password" placeholder="Confirmar Senha">
-  <button onclick="registrar()">Registrar</button>
-  <p id="msg"></p>
+  <h2>Registrar Conta</h2>
+  <input type="text" id="username" placeholder="Usuário"><br>
+  <input type="password" id="password" placeholder="Senha"><br>
+  <button onclick="register()">Registrar</button>
+  <div id="msg"></div>
 
   <script>
-    async function registrar() {
-      const user = document.getElementById('username').value;
-      const pass = document.getElementById('password').value;
-      const confirm = document.getElementById('confirm').value;
-
-      if (pass !== confirm) {
-        document.getElementById('msg').innerText = "Senhas diferentes.";
-        return;
-      }
+    async function register() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const msg = document.getElementById('msg');
 
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: user, password: pass })
+        body: JSON.stringify({ username, password })
       });
 
       const data = await res.json();
-      if (res.ok) {
-        document.getElementById('msg').innerText = "Conta criada com sucesso!";
-      } else {
-        document.getElementById('msg').innerText = data.error;
-      }
+      msg.textContent = data.message || data.error;
+
+      if (res.ok) setTimeout(() => location.href = 'login.html', 1000);
     }
   </script>
 </body>

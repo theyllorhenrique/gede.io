@@ -3,34 +3,39 @@
 <head>
   <meta charset="UTF-8">
   <title>Menu</title>
+  <style>
+    body { background: #000; color: white; font-family: Arial; text-align: center; padding-top: 100px; }
+    button { padding: 10px 20px; margin: 10px; font-size: 16px; }
+    #adminOnly { display: none; margin-top: 20px; }
+  </style>
 </head>
 <body>
-  <h1>Bem-vindo, <span id="user"></span></h1>
-  <button onclick="jogar()">Jogar</button>
+  <h1>Menu Principal</h1>
+  <button onclick="startGame()">Iniciar Jogo</button>
   <button onclick="logout()">Sair</button>
 
-  <div id="admin" style="display:none;">
-    <h3>Administração</h3>
-    <button onclick="alert('Gerenciar usuários')">Gerenciar Usuários</button>
-    <button onclick="alert('Logs do sistema')">Ver Logs</button>
+  <div id="adminOnly">
+    <h2>Área do Administrador</h2>
+    <button onclick="alert('Acesso Admin')">Painel Admin</button>
   </div>
 
   <script>
-    const user = localStorage.getItem('username');
-    const isAdmin = localStorage.getItem('isAdmin') === "true";
-    document.getElementById('user').innerText = user;
-    if (isAdmin) document.getElementById('admin').style.display = "block";
-
-    function jogar() {
-      window.location.href = "/jogo/jogo.html";
+    function startGame() {
+      window.location.href = "jogo/jogo.html";
     }
 
     function logout() {
-      fetch('/logout').then(() => {
-        localStorage.clear();
-        window.location.href = "/login.html";
+      fetch('/api/auth/logout').then(() => {
+        localStorage.removeItem('isAdmin');
+        window.location.href = "login.html";
       });
+    }
+
+    // Mostra recursos de admin se for admin
+    if (localStorage.getItem('isAdmin') === 'true') {
+      document.getElementById('adminOnly').style.display = 'block';
     }
   </script>
 </body>
 </html>
+
