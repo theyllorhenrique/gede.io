@@ -1,37 +1,31 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Registrar</title>
-  <style>
-    body { background: #111; color: white; font-family: Arial; text-align: center; padding-top: 100px; }
-    input, button { padding: 10px; margin: 10px; width: 200px; }
-    button { cursor: pointer; }
-  </style>
 </head>
 <body>
-  <h2>Registrar Conta</h2>
-  <input type="text" id="username" placeholder="Usuário"><br>
-  <input type="password" id="password" placeholder="Senha"><br>
-  <button onclick="register()">Registrar</button>
-  <div id="msg"></div>
+  <h1>Registrar Conta</h1>
+  <input type="text" id="username" placeholder="Nome de usuário"><br><br>
+  <input type="password" id="password" placeholder="Senha"><br><br>
+  <button onclick="registrar()">Registrar</button>
+  <p id="msg"></p>
 
   <script>
-    async function register() {
+    async function registrar() {
       const username = document.getElementById('username').value;
       const password = document.getElementById('password').value;
-      const msg = document.getElementById('msg');
 
-      const res = await fetch('/api/auth/register', {
+      const res = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
       });
 
       const data = await res.json();
-      msg.textContent = data.message || data.error;
+      document.getElementById('msg').innerText = data.message || data.error;
 
-      if (res.ok) setTimeout(() => location.href = 'login.html', 1000);
+      if (res.ok) window.location.href = 'login.html';
     }
   </script>
 </body>

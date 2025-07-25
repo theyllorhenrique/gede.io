@@ -1,41 +1,30 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Menu</title>
-  <style>
-    body { background: #000; color: white; font-family: Arial; text-align: center; padding-top: 100px; }
-    button { padding: 10px 20px; margin: 10px; font-size: 16px; }
-    #adminOnly { display: none; margin-top: 20px; }
-  </style>
 </head>
 <body>
-  <h1>Menu Principal</h1>
-  <button onclick="startGame()">Iniciar Jogo</button>
-  <button onclick="logout()">Sair</button>
-
-  <div id="adminOnly">
-    <h2>Área do Administrador</h2>
-    <button onclick="alert('Acesso Admin')">Painel Admin</button>
-  </div>
+  <h1>Menu do Jogo</h1>
+  <button onclick="entrarJogo()">Entrar no Jogo</button>
+  <button id="adminBtn" onclick="acessoAdmin()" style="display: none;">Painel Admin</button>
 
   <script>
-    function startGame() {
-      window.location.href = "jogo/jogo.html";
+    function entrarJogo() {
+      window.location.href = 'jogo/jogo.html';
     }
 
-    function logout() {
-      fetch('/api/auth/logout').then(() => {
-        localStorage.removeItem('isAdmin');
-        window.location.href = "login.html";
-      });
+    function acessoAdmin() {
+      alert('Você está no modo Admin!');
+      // aqui pode abrir admin.html ou admin.js
     }
 
-    // Mostra recursos de admin se for admin
-    if (localStorage.getItem('isAdmin') === 'true') {
-      document.getElementById('adminOnly').style.display = 'block';
-    }
+    window.onload = () => {
+      const isAdmin = localStorage.getItem('isAdmin') === 'true';
+      if (isAdmin) {
+        document.getElementById('adminBtn').style.display = 'inline-block';
+      }
+    };
   </script>
 </body>
 </html>
-
