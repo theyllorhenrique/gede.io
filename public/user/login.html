@@ -2,34 +2,84 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Login</title>
+  <style>
+    body {
+      background: #1a1a1a;
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      text-align: center;
+      background: #2c2c2c;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(255,255,255,0.1);
+    }
+
+    input, button {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      font-size: 1em;
+      border-radius: 8px;
+      border: none;
+    }
+
+    input {
+      background: #444;
+      color: white;
+    }
+
+    button {
+      background: #555;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #777;
+    }
+
+    #msg {
+      margin-top: 10px;
+      color: red;
+    }
+  </style>
 </head>
 <body>
-  <h1>Entrar na Conta</h1>
-  <input type="text" id="username" placeholder="Nome de usuário"><br><br>
-  <input type="password" id="password" placeholder="Senha"><br><br>
-  <button onclick="login()">Entrar</button>
-  <p id="msg"></p>
+  <div class="container">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Usuário" />
+    <input type="password" id="password" placeholder="Senha" />
+    <button onclick="logar()">Entrar</button>
+    <p id="msg"></p>
+  </div>
 
   <script>
-    async function login() {
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
+    async function logar() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
 
-      const res = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password })
       });
 
       const data = await res.json();
-      document.getElementById('msg').innerText = data.message || data.error;
+      document.getElementById("msg").innerText = data.message || data.error;
 
-      if (res.ok) {
-        // Salva se é admin no localStorage
-        localStorage.setItem('isAdmin', data.isAdmin);
-        window.location.href = '../menu.html';
-      }
+      if (res.ok) window.location.href = "/menu.html";
     }
   </script>
 </body>
