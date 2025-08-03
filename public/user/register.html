@@ -6,95 +6,108 @@
   <title>Cadastro</title>
   <style>
     body {
-      margin: 0;
-      padding: 0;
-      background: #1a1a1a;
+      background-color: #1a1a1a;
       color: white;
       font-family: Arial, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
+      margin: 0;
     }
 
-    .container {
-      background: #2a2a2a;
-      padding: 40px;
-      border-radius: 15px;
+    .form-container {
+      background: #2c2c2c;
+      padding: 30px;
+      border-radius: 12px;
       box-shadow: 0 0 10px #000;
-      text-align: center;
+      width: 300px;
     }
 
-    h1 {
+    h2 {
+      text-align: center;
       margin-bottom: 20px;
     }
 
     input {
-      width: 250px;
+      width: 100%;
       padding: 10px;
-      margin: 10px 0;
+      margin: 8px 0;
       border: none;
-      border-radius: 8px;
+      border-radius: 6px;
+      background: #444;
+      color: white;
     }
 
     button {
-      padding: 10px 20px;
-      background: #4CAF50;
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      background: #007bff;
       border: none;
+      border-radius: 6px;
       color: white;
-      font-size: 1em;
-      border-radius: 8px;
+      font-weight: bold;
       cursor: pointer;
-      transition: 0.3s;
+      transition: background 0.3s;
     }
 
     button:hover {
-      background: #45a049;
+      background: #0056b3;
     }
 
-    .msg {
+    .message {
       margin-top: 10px;
+      text-align: center;
+      font-size: 0.9em;
       color: #f44336;
     }
 
-    a {
-      color: #4CAF50;
-      display: block;
-      margin-top: 15px;
-      text-decoration: none;
+    .success {
+      color: #4caf50;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Cadastro</h1>
-    <input type="text" id="username" placeholder="Usuário" /><br/>
-    <input type="password" id="password" placeholder="Senha" /><br/>
-    <button onclick="registrar()">Cadastrar</button>
-    <p id="msg" class="msg"></p>
-    <a href="login.html">Já tem conta? Faça login</a>
+
+  <div class="form-container">
+    <h2>Cadastro</h2>
+    <form id="registerForm">
+      <input type="text" name="username" placeholder="Nome de usuário" required />
+      <input type="password" name="password" placeholder="Senha" required />
+      <input type="password" name="confirmPassword" placeholder="Confirmar senha" required />
+      <button type="submit">Registrar</button>
+    </form>
+    <div class="message" id="message"></div>
   </div>
 
   <script>
-    async function registrar() {
-      const username = document.getElementById("username").value;
-      const password = document.getElementById("password").value;
+    const form = document.getElementById('registerForm');
+    const message = document.getElementById('message');
 
-      const res = await fetch('/api/register', {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+
+      const response = await fetch('/register', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(data)
       });
 
-      const data = await res.json();
-      document.getElementById("msg").innerText = data.message || data.error;
+      const text = await response.text();
+      message.textContent = text;
 
-      if (res.ok) {
-        setTimeout(() => {
-          window.location.href = "login.html";
-        }, 1000);
+      if (text.startsWith('✅')) {
+        message.classList.add('success');
+        form.reset();
+      } else {
+        message.classList.remove('success');
       }
-    }
+    });
   </script>
+
 </body>
 </html>

@@ -1,86 +1,75 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
   <title>Login</title>
   <style>
     body {
-      background: #1a1a1a;
+      background-color: #1a1a1a;
       color: white;
       font-family: Arial, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      margin: 0;
     }
 
-    .container {
-      text-align: center;
-      background: #2c2c2c;
+    form {
+      background: #2b2b2b;
       padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 0 15px rgba(255,255,255,0.1);
-    }
-
-    input, button {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      font-size: 1em;
-      border-radius: 8px;
-      border: none;
+      border-radius: 10px;
+      width: 300px;
+      text-align: center;
     }
 
     input {
-      background: #444;
-      color: white;
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
     }
 
     button {
-      background: #555;
+      background-color: #2196F3;
       color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
       cursor: pointer;
-      transition: 0.3s;
-    }
-
-    button:hover {
-      background: #777;
+      width: 100%;
     }
 
     #msg {
       margin-top: 10px;
-      color: red;
     }
   </style>
 </head>
 <body>
-  <div class="container">
+
+  <form action="/login" method="POST" onsubmit="return handleLogin(event)">
     <h2>Login</h2>
-    <input type="text" id="username" placeholder="Usuário" />
-    <input type="password" id="password" placeholder="Senha" />
-    <button onclick="logar()">Entrar</button>
-    <p id="msg"></p>
-  </div>
+    <input type="text" name="username" placeholder="Nome de usuário" required>
+    <input type="password" name="password" placeholder="Senha" required>
+    <button type="submit">Entrar</button>
+    <div id="msg"></div>
+  </form>
 
   <script>
-    async function logar() {
-      const username = document.getElementById("username").value;
-      const password = document.getElementById("password").value;
-
-      const res = await fetch("/api/login", {
+    async function handleLogin(event) {
+      event.preventDefault();
+      const form = event.target;
+      const formData = new FormData(form);
+      const response = await fetch("/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password })
+        body: formData,
       });
 
-      const data = await res.json();
-      document.getElementById("msg").innerText = data.message || data.error;
-
-      if (res.ok) window.location.href = "/menu.html";
+      const msg = await response.text();
+      document.getElementById("msg").innerText = msg;
     }
   </script>
+
 </body>
 </html>
